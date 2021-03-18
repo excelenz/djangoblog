@@ -6,11 +6,7 @@ STATUS = (
     (1,"Publish")
 )
 
-class Likes(models.Model):
-    id_like = models.AutoField(primary_key=True)
-    id_post = models.ForeignKey(Post, on_delete= models.CASCADE,related_name='blog_likes')
-    id_user = models.ForeignKey(User, on_delete= models.CASCADE,related_name='blog_likes')
-    like_status =  models.IntegerField(default=0)
+
 
 class Post(models.Model):
     id_post = models.AutoField(primary_key=True)
@@ -26,3 +22,10 @@ class Post(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class Likes(models.Model):
+    id_like = models.AutoField(primary_key=True)
+    id_post = models.ForeignKey(Post, on_delete= models.CASCADE,related_name='blog_likes')
+    id_user = models.ForeignKey(User, on_delete= models.CASCADE,related_name='blog_likes')
+    like_status =  models.IntegerField(default=0)
