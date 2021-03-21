@@ -14,4 +14,3 @@ class PostDetail(generic.DetailView):
         likes = 0
         unlikes = 0
     template_name = 'post_detail.html'
-
