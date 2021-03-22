@@ -111,6 +111,11 @@ REST_FRAMEWORK = {
                   ['rest_framework_simplejwt.authentication.JWTAuthentication',],
 }
 
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=35),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+}
 # Internationalization
 # https://docs.djangoproject.com/en/3.1/topics/i18n/
 
