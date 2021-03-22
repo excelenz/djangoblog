@@ -8,6 +8,7 @@ STATUS = (
 
 
 
+
 class Post(models.Model):
     id_post = models.AutoField(primary_key=True)
     title = models.CharField(max_length=200, unique=True)
@@ -16,15 +17,13 @@ class Post(models.Model):
     content = models.TextField()
     created_on = models.DateTimeField(auto_now_add=True)
     status = models.IntegerField(choices=STATUS, default=0)
+    likes = models.ManyToManyField(User, related_name='post_likes', blank = True)
+    unlikes = models.ManyToManyField(User, related_name='post_unlikes', blank = True)
     class Meta:
         ordering = ['-created_on']
 
+    def number_of_likes(self):
+        return self.likes.count()
+
     def __str__(self):
         return self.title
-
-
-class Likes(models.Model):
-    id_like = models.AutoField(primary_key=True)
-    id_post = models.ForeignKey(Post, on_delete= models.CASCADE,related_name='blog_likes')
-    id_user = models.ForeignKey(User, on_delete= models.CASCADE,related_name='blog_likes')
-    like_status =  models.IntegerField(default=0)
