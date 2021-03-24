@@ -6,9 +6,6 @@ STATUS = (
     (1,"Publish")
 )
 
-
-
-
 class Post(models.Model):
     id_post = models.AutoField(primary_key=True)
     title = models.CharField(max_length=200, unique=True)
