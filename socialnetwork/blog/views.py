@@ -4,6 +4,8 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from socialnetwork.models import Account
+from socialnetwork.models import User
+from . serializer import BlogPostSerializer
 from rest_framework.decorators import api_view
 
 class PostList(generic.ListView,APIView):
@@ -19,14 +21,13 @@ class PostDetail(generic.DetailView,APIView):
 
 @api_view(['POST'])
 def create_post(request):
-
-	account = Account.objects.get(pk=1)
-	blog_post = Post(author=account)
-
 	if request.method == 'POST':
-		serializer = BlogPostSerializer(blog_post, data=request.data)
-		data = {}
-		if serializer.is_valid():
-			serializer.save()
-			return Response(serializer.data, status=status.HTTP_201_CREATED)
-		return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+		user = User.objects.get(pk=1)
+		blog_post = Post(author=user)
+		if request.method == 'POST':
+			serializer = BlogPostSerializer(blog_post, data=request.data)
+			data = {}
+			if serializer.is_valid():
+				post = serializer.save()
+				return Response(serializer.data)
+			return Response(serializer.errors)
