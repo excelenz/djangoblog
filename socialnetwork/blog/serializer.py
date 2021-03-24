@@ -2,19 +2,19 @@ from rest_framework import serializers
 from blog.models import Post
 from django.contrib.auth.models import User
 
-
 class BlogPostSerializer(serializers.ModelSerializer):
+
+	author = serializers.SerializerMethodField(source='User')
 	class Meta:
 		model = Post
-		fields = ['title', 'author','content', 'status,' ]
+		fields = "__all__"
 
-	def	save(self):
-		author = serializers.SlugRelatedField(
-			username='author',
-			queryset=User.objects.all()
-		)
-		title = self.validated_data['title']
-		content = self.validated_data['content']
 
-		post.save()
-		return post
+class PostSerializer(serializers.ModelSerializer):
+	author = serializers.SlugRelatedField(
+	queryset=User.objects.all(), slug_field='username'
+	)
+
+	class Meta:
+		model = Post
+		fields = ('title', 'author', 'content','status')
