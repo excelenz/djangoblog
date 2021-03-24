@@ -10,4 +10,4 @@ class PostAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Post, PostAdmin)
-admin.site.register(Account)
+#admin.site.register(Account)
