@@ -22,7 +22,7 @@ class PostDetail(generic.DetailView,APIView):
 
 @api_view(['POST'])
 def create_post(request):
-    data = {'auth':unicode(request.auth),'status':1,'title': request.data.get('title'),'content': request.data.get('content'), 'author': request.data.get('author')}
+    data = {'status':1,'title': request.data.get('title'),'content': request.data.get('content'), 'author': request.data.get('author')}
     serializer = PostSerializer(data=data)
     if serializer.is_valid():
         serializer.save()

@@ -15,13 +15,13 @@ class Bot(APIView):
 
     urlRegister = "http://127.0.0.1:5000/api/token/register/"
     urlGetToken = "http://127.0.0.1:5000/api/token/"
+    urlPostArticle = "http://127.0.0.1:5000/api/token/post/"
     module_dir = os.path.abspath(os.path.dirname(__file__+ "/../../"))
     with open(os.path.join(module_dir,'static/setbot.txt')) as fp:
        line = fp.readline()
        cnt = 1
        sets = {}
        while line:
-           print("Line {}: {}".format(cnt, line.strip()))
            x = line.replace('\n', '').replace(' ', '').split("=")
            sets[x[0]]=x[1]
            line = fp.readline()
@@ -29,8 +29,7 @@ class Bot(APIView):
     def get(self, request):
         content = []
         [content.append(self.make_user()) for i in range(int(self.sets['number_of_users']))]
-        print(content)
-        return return Response("content")
+        return  Response(content)
 
     def make_user(self):
         signup  =  self.signup()
@@ -40,8 +39,8 @@ class Bot(APIView):
             token = self.login(**payload)
             content = {'credentials': signup,'token':token}
         else:
-            return Response({"status":"fail"})
-        return Response(content)
+            return {"status":"fail"}
+        return content
 
 
     def signup(self):
@@ -63,10 +62,19 @@ class Bot(APIView):
                 setattr(self, key, kwargs[key])
             except:
                 setattr(self, key, "")
-        print(login_data)
         r = requests.post(self.urlGetToken, data=login_data)
-        print([self.autopost() for i in range(int(self.sets['max_posts_per_user']))])
+        mylist1 = ["ראטארט", "ראטארטאט", "ארטרטאטארט"]
+        mylist2 = ["dsfdsfdsafdsafdsafdsafdsfdsfs", "rsdfdsafdsfdsדגכדגכגדכגדכגדכtrtrtfor", "pytrדגכגדכגדכגדכגדכגדכגדכגדכtrtrtrtrhon"]
+        [self.autopost(**{'title': random.choices(mylist1) ,'author': login_data['username'] ,'status':1,'content': random.choices(mylist2) , 'key': r}) for i in range(int(self.sets['max_posts_per_user']))]
         return r
 
     def autopost(self,**kwargs):
+        login_data = {}
+        for key in ('title','author','status','content','key'):
+            try:
+                login_data[key] = kwargs[key]
+                setattr(self, key, kwargs[key])
+            except:
+                setattr(self, key, "")
+        r = requests.post(self.urlPostArticle, data=login_data)
         return 1
