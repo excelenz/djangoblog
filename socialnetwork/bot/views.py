@@ -7,6 +7,7 @@ import json
 import urllib
 import re
 import time
+import os
 
 # we wanna call to bot by get URL not from console.
 
@@ -14,10 +15,34 @@ class Bot(APIView):
 
     urlRegister = "http://127.0.0.1:5000/api/token/register/"
     urlGetToken = "http://127.0.0.1:5000/api/token/"
+    module_dir = os.path.abspath(os.path.dirname(__file__+ "/../../"))
+    with open(os.path.join(module_dir,'static/setbot.txt')) as fp:
+       line = fp.readline()
+       cnt = 1
+       sets = {}
+       while line:
+           print("Line {}: {}".format(cnt, line.strip()))
+           x = line.replace('\n', '').replace(' ', '').split("=")
+           sets[x[0]]=x[1]
+           line = fp.readline()
 
     def get(self, request):
-        content = {'message': self.signup()}
+        content = []
+        [content.append(self.make_user()) for i in range(int(self.sets['number_of_users']))]
+        print(content)
+        return return Response("content")
+
+    def make_user(self):
+        signup  =  self.signup()
+        time.sleep(1)
+        if signup['status']==1:
+            payload = {'username': signup['username'] ,'password':signup['password']}
+            token = self.login(**payload)
+            content = {'credentials': signup,'token':token}
+        else:
+            return Response({"status":"fail"})
         return Response(content)
+
 
     def signup(self):
         username =  str(random.randrange(100000, 1000000)) +'user'
@@ -25,12 +50,10 @@ class Bot(APIView):
         payload = {'email': str(random.randrange(100, 1000))+'asfasf@gmail.com', 'username': username,'password':password }
         r = requests.post(self.urlRegister, data=payload)
         if 'successfully registered new user' in str(r.json()['response']):
-            payload = {'username': username,'password':password}
-            time.sleep(1)
-            token = self.login(**payload)
-            return token
+            payload['status'] = 1
+            return payload
         else:
-            return {"responce":"we lost"}
+            return {"status":"0"}
 
     def login(self,**kwargs):
         login_data = {}
@@ -42,4 +65,8 @@ class Bot(APIView):
                 setattr(self, key, "")
         print(login_data)
         r = requests.post(self.urlGetToken, data=login_data)
-        return {"responce":r,"credentials":login_data}
+        print([self.autopost() for i in range(int(self.sets['max_posts_per_user']))])
+        return r
+
+    def autopost(self,**kwargs):
+        return 1

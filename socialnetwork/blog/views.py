@@ -2,10 +2,11 @@ from django.views import generic
 from . models import Post
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from rest_framework.permissions import IsAuthenticated
 from socialnetwork.models import Account
 from socialnetwork.models import User
-from . serializer import BlogPostSerializer,PostSerializer
+from . serializer import PostSerializer
 from rest_framework.decorators import api_view
 
 class PostList(generic.ListView,APIView):
@@ -21,7 +22,7 @@ class PostDetail(generic.DetailView,APIView):
 
 @api_view(['POST'])
 def create_post(request):
-    data = {'status':1,'title': request.data.get('title'),'content': request.data.get('content'), 'author': request.data.get('author')}
+    data = {'auth':unicode(request.auth),'status':1,'title': request.data.get('title'),'content': request.data.get('content'), 'author': request.data.get('author')}
     serializer = PostSerializer(data=data)
     if serializer.is_valid():
         serializer.save()
