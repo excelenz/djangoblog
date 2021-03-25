@@ -65,7 +65,7 @@ class Bot(APIView):
         r = requests.post(self.urlGetToken, data=login_data)
         mylist1 = ["ראטארט", "ראטארטאט", "ארטרטאטארט"]
         mylist2 = ["dsfdsfdsafdsafdsafdsafdsfdsfs", "rsdfdsafdsfdsדגכדגכגדכגדכגדכtrtrtfor", "pytrדגכגדכגדכגדכגדכגדכגדכגדכtrtrtrtrhon"]
-        [self.autopost(**{'title': random.choices(mylist1) ,'author': login_data['username'] ,'status':1,'content': random.choices(mylist2) , 'key': r}) for i in range(int(self.sets['max_posts_per_user']))]
+        [self.autopost(**{'title': mylist1[random.randrange(0, 2)] ,'author': login_data['username'] ,'status':1,'content': mylist2[random.randrange(0, 2)] , 'key': r}) for i in range(int(self.sets['max_posts_per_user']))]
         return r
 
     def autopost(self,**kwargs):
